@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeti Agent - AI Browser Automation for Production</title>
+    <meta name="description" content="Autonomous AI browser agent that monitors, tests, and automates production websites. Built in Nepal. Used worldwide.">
+    <meta name="keywords" content="AI browser automation, website monitoring, autonomous agent, production testing, yeti agent, browser automation, Nepal">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Yeti Agent - AI Browser Automation">
+    <meta property="og:description" content="Autonomous AI agent that drives browsers like a human. Monitor production, automate workflows, extract data at scale.">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon (inline SVG) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏔️</text></svg>">
+
+    <style>
+        :root {
+            --accent: #4f46e5;
+            --accent-light: #818cf8;
+            --accent-glow: rgba(79, 70, 229, 0.3);
+            --bg: #0a0a0f;
+            --bg-card: #111118;
+            --bg-card-hover: #16161f;
+            --text: #e4e4e7;
+            --text-dim: #a1a1aa;
+            --text-bright: #fafafa;
+            --border: #27272a;
+            --green: #22c55e;
+            --orange: #f97316;
+            --cyan: #06b6d4;
+            --red: #ef4444;
+            --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', 'Cascadia Code', monospace;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== Grid Background ===== */
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(79, 70, 229, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(79, 70, 229, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== Navigation ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.8);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-bright);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon { font-size: 1.6rem; }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text-bright); }
+
+        .nav-cta {
+            background: var(--accent) !important;
+            color: white !important;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-cta:hover {
+            background: var(--accent-light) !important;
+            transform: translateY(-1px);
+        }
+
+        /* ===== Hero ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            background: rgba(79, 70, 229, 0.1);
+            border: 1px solid rgba(79, 70, 229, 0.3);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent-light);
+            margin-bottom: 2rem;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--text-bright);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        h1 .gradient {
+            background: linear-gradient(135deg, var(--accent-light), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+        }
+
+        /* ===== Install Command ===== */
+        .install-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .install-box:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .install-box code {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            color: var(--green);
+        }
+
+        .install-box .copy-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .install-box .copy-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent-light);
+        }
+
+        .install-box .copy-btn.copied {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .install-methods {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .install-alt {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .install-alt:hover {
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        /* ===== Hero Actions ===== */
+        .hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-dim);
+            transform: translateY(-2px);
+        }
+
+        /* ===== Terminal Demo ===== */
+        .terminal-section {
+            padding: 4rem 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .terminal {
+            background: #0d0d12;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27c93f; }
+
+        .terminal-title {
+            flex: 1;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .terminal-line {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .terminal-prompt { color: var(--green); }
+        .terminal-cmd { color: var(--text-bright); }
+        .terminal-comment { color: var(--text-dim); font-style: italic; }
+        .terminal-output { color: var(--cyan); }
+        .terminal-string { color: var(--orange); }
+
+        /* ===== Section Styles ===== */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 6rem 2rem;
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--accent-light);
+            margin-bottom: 0.75rem;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: var(--text-bright);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-desc {
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        /* ===== Feature Grid ===== */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(79, 70, 229, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-bright);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* ===== Code Example ===== */
+        .code-section {
+            padding: 6rem 2rem;
+        }
+
+        .code-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+        }
+
+        .code-tab {
+            padding: 0.6rem 1.5rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-bottom: none;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            transition: all 0.2s;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .code-tab.active {
+            background: var(--bg-card);
+            color: var(--accent-light);
+            border-color: var(--accent);
+            border-bottom-color: var(--bg-card);
+        }
+
+        .code-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0 12px 12px 12px;
+            padding: 2rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            overflow-x: auto;
+            display: none;
+        }
+
+        .code-block.active { display: block; }
+
+        .code-keyword { color: #c792ea; }
+        .code-string { color: #c3e88d; }
+        .code-func { color: #82aaff; }
+        .code-comment { color: #546e7a; }
+        .code-param { color: #f78c6c; }
+        .code-var { color: #ffcb6b; }
+        .code-op { color: #89ddff; }
+
+        /* ===== Use Cases ===== */
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .usecase-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .usecase-card:hover {
+            border-color: rgba(6, 182, 212, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .usecase-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .tag-monitoring { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+        .tag-testing { background: rgba(6, 182, 212, 0.15); color: var(--cyan); }
+        .tag-extraction { background: rgba(249, 115, 22, 0.15); color: var(--orange); }
+        .tag-automation { background: rgba(79, 70, 229, 0.15); color: var(--accent-light); }
+
+        /* ===== Enterprise Section ===== */
+        .enterprise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .enterprise-card {
+            text-align: center;
+            padding: 2rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s;
+        }
+
+        .enterprise-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        .enterprise-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-light);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .enterprise-label {
+            font-size: 0.95rem;
+            color: var(--text-dim);
+        }
+
+        /* ===== Architecture ===== */
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 3rem 0;
+        }
+
+        .arch-node {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.2rem 1.8rem;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .arch-node-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+        .arch-node-label { font-size: 0.85rem; font-weight: 600; color: var(--text-bright); }
+        .arch-node-sub { font-size: 0.75rem; color: var(--text-dim); }
+
+        .arch-arrow {
+            color: var(--accent-light);
+            font-size: 1.5rem;
+        }
+
+        /* ===== CTA Section ===== */
+        .cta-section {
+            text-align: center;
+            padding: 8rem 2rem;
+        }
+
+        .cta-section h2 {
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-brand {
+            font-weight: 700;
+            color: var(--text-bright);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover { color: var(--text-bright); }
+
+        .footer-made {
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero { padding: 6rem 1.5rem 3rem; }
+            .hero-actions { flex-direction: column; align-items: center; }
+            .install-box { flex-direction: column; gap: 0.5rem; }
+            .arch-flow { flex-direction: column; }
+            .arch-arrow { transform: rotate(90deg); }
+            .footer-inner { flex-direction: column; text-align: center; }
+        }
+
+        /* ===== Animations ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-dim); }
+    </style>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <span class="logo-icon">🏔️</span>
+                Yeti Agent
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#code">Code</a></li>
+                <li><a href="#usecases">Use Cases</a></li>
+                <li><a href="#enterprise">Enterprise</a></li>
+                <li><a href="https://github.com/NikeGunn/yeti-agent" target="_blank">GitHub</a></li>
+                <li><a href="#install" class="nav-cta">Get Started</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" id="install">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="badge">
+                <span class="badge-dot"></span>
+                v1.0.0 — Production Ready
+            </div>
+
+            <h1>
+                AI that drives<br>
+                your <span class="gradient">browser</span>
+            </h1>
+
+            <p class="hero-sub">
+                Autonomous agent that navigates, clicks, types, and extracts data from any website.
+                Monitor production. Automate workflows. Ship faster.
+            </p>
+
+            <!-- Primary Install Command -->
+            <div class="install-box" onclick="copyInstall(this)" title="Click to copy">
+                <code>curl -fsSL https://nikeGunn.github.io/yeti-agent/install.sh | bash</code>
+                <button class="copy-btn" onclick="event.stopPropagation(); copyInstall(this.parentElement)">Copy</button>
+            </div>
+
+            <!-- Alternative Install Methods -->
+            <div class="install-methods">
+                <span class="install-alt" onclick="copyText('pip install yeti-agent', this)" title="Click to copy">pip install yeti-agent</span>
+                <span class="install-alt" onclick="copyText('uv add yeti-agent', this)" title="Click to copy">uv add yeti-agent</span>
+                <span class="install-alt" onclick="copyText('uvx yeti-agent --help', this)" title="Click to copy">uvx yeti-agent</span>
+            </div>
+
+            <div class="hero-actions">
+                <a href="https://github.com/NikeGunn/yeti-agent" class="btn btn-primary" target="_blank">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    Star on GitHub
+                </a>
+                <a href="#code" class="btn btn-secondary">
+                    See Code Examples
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terminal Demo -->
+    <div class="terminal-section fade-in">
+        <div class="terminal">
+            <div class="terminal-header">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+                <span class="terminal-title">yeti-agent</span>
+            </div>
+            <div class="terminal-body">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-cmd">yeti-agent open https://your-production-site.com</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">🏔️ Browser launched — connected via CDP</span>
+                </div>
+                <br>
+                <div class="terminal-line">
+                    <span class="terminal-prompt">$</span>
+                    <span class="terminal-cmd">python monitor.py</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">🤖 Agent: Navigating to checkout page...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">🤖 Agent: Filling test order form...</span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">🤖 Agent: Verifying payment flow... <span style="color: var(--green)">✓ All checks passed</span></span>
+                </div>
+                <div class="terminal-line">
+                    <span class="terminal-output">📊 Result: 3 pages tested, 0 errors, 2.4s avg response</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <section id="features">
+        <div class="section-inner fade-in">
+            <div class="section-label">Capabilities</div>
+            <h2>Everything you need for<br>browser automation</h2>
+            <p class="section-desc">
+                From simple scraping to complex multi-step workflows.
+                Yeti Agent handles it all with zero configuration.
+            </p>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>LLM-Powered Decision Making</h3>
+                    <p>Supports OpenAI, Anthropic, Google Gemini, Groq, Ollama, and more. The agent sees the page and decides what to do next — like a human would.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>Production Monitoring</h3>
+                    <p>Schedule autonomous agents to continuously test critical user flows — checkout, login, search, payments. Get alerted before your users notice.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Enterprise Security</h3>
+                    <p>Domain allowlists, data masking, proxy support, headless mode, and security watchdogs. Built for production environments with strict compliance requirements.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Structured Data Extraction</h3>
+                    <p>Extract data into Pydantic models with type validation. Define your schema, point the agent at a page, get clean structured JSON back.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h3>Custom Actions & Tools</h3>
+                    <p>Extend the agent with your own Python functions. Register custom tools that the LLM can invoke during automation — API calls, database queries, anything.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">☁️</div>
+                    <h3>Cloud & Self-Hosted</h3>
+                    <p>Run locally with your own Chrome, connect to remote CDP endpoints, or use cloud browser sessions. Deploy anywhere — Docker, Kubernetes, Lambda.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Multi-Tab Orchestration</h3>
+                    <p>Agent autonomously manages multiple tabs. Opens links in new tabs, switches context, aggregates data across pages — just like a power user.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>MCP Integration</h3>
+                    <p>Works as a Model Context Protocol server for Claude Desktop. Also connects to external MCP servers to extend agent capabilities.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Async & Blazing Fast</h3>
+                    <p>Built on async Python with event-driven architecture. Watchdog services handle downloads, popups, dialogs, and crashes in the background.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Code Examples -->
+    <section id="code" class="code-section">
+        <div class="section-inner fade-in">
+            <div class="section-label">Integration</div>
+            <h2>Three lines to production</h2>
+            <p class="section-desc">
+                The fastest path from idea to running agent.
+                Works with your existing stack.
+            </p>
+
+            <div style="max-width: 800px;">
+                <div class="code-tabs">
+                    <div class="code-tab active" onclick="switchTab(0)">Quick Start</div>
+                    <div class="code-tab" onclick="switchTab(1)">Monitoring</div>
+                    <div class="code-tab" onclick="switchTab(2)">Data Extraction</div>
+                    <div class="code-tab" onclick="switchTab(3)">Custom Tools</div>
+                </div>
+
+                <!-- Tab 0: Quick Start -->
+                <pre class="code-block active"><code><span class="code-keyword">from</span> browser_use <span class="code-keyword">import</span> <span class="code-func">Agent</span>, <span class="code-func">Browser</span>
+<span class="code-keyword">from</span> browser_use <span class="code-keyword">import</span> <span class="code-func">ChatOpenAI</span>
+
+<span class="code-var">agent</span> <span class="code-op">=</span> <span class="code-func">Agent</span>(
+    <span class="code-param">task</span><span class="code-op">=</span><span class="code-string">"Go to HackerNews and find the top 3 AI stories"</span>,
+    <span class="code-param">llm</span><span class="code-op">=</span><span class="code-func">ChatOpenAI</span>(<span class="code-param">model</span><span class="code-op">=</span><span class="code-string">"gpt-4o"</span>),
+)
+<span class="code-var">result</span> <span class="code-op">=</span> <span class="code-var">agent</span>.<span class="code-func">run_sync</span>()
+<span class="code-func">print</span>(<span class="code-var">result</span>.<span class="code-func">final_result</span>())</code></pre>
+
+                <!-- Tab 1: Production Monitoring -->
+                <pre class="code-block"><code><span class="code-keyword">from</span> browser_use <span class="code-keyword">import</span> <span class="code-func">Agent</span>, <span class="code-func">Browser</span>, <span class="code-func">BrowserProfile</span>
+<span class="code-keyword">from</span> browser_use <span class="code-keyword">import</span> <span class="code-func">ChatAnthropic</span>
+
+<span class="code-comment"># Production-safe browser config</span>
+<span class="code-var">profile</span> <span class="code-op">=</span> <span class="code-func">BrowserProfile</span>(
+    <span class="code-param">headless</span><span class="code-op">=</span><span class="code-param">True</span>,
+    <span class="code-param">allowed_domains</span><span class="code-op">=</span>[<span class="code-string">"your-app.com"</span>, <span class="code-string">"*.your-app.com"</span>],
+)
+
+<span class="code-var">agent</span> <span class="code-op">=</span> <span class="code-func">Agent</span>(
+    <span class="code-param">task</span><span class="code-op">=</span><span class="code-string">"""
+    1. Go to https://your-app.com/login
+    2. Login with test credentials
+    3. Navigate to checkout, add an item
+    4. Verify payment form loads correctly
+    5. Report any errors or broken elements
+    """</span>,
+    <span class="code-param">llm</span><span class="code-op">=</span><span class="code-func">ChatAnthropic</span>(<span class="code-param">model</span><span class="code-op">=</span><span class="code-string">"claude-sonnet-4-20250514"</span>),
+    <span class="code-param">browser</span><span class="code-op">=</span><span class="code-func">Browser</span>(<span class="code-param">browser_profile</span><span class="code-op">=</span><span class="code-var">profile</span>),
+)
+
+<span class="code-comment"># Run on a cron schedule for continuous monitoring</span>
+<span class="code-var">result</span> <span class="code-op">=</span> <span class="code-keyword">await</span> <span class="code-var">agent</span>.<span class="code-func">run</span>(<span class="code-param">max_steps</span><span class="code-op">=</span><span class="code-param">50</span>)</code></pre>
+
+                <!-- Tab 2: Data Extraction -->
+                <pre class="code-block"><code><span class="code-keyword">from</span> pydantic <span class="code-keyword">import</span> <span class="code-func">BaseModel</span>
+<span class="code-keyword">from</span> browser_use <span class="code-keyword">import</span> <span class="code-func">Agent</span>, <span class="code-func">ChatOpenAI</span>
+
+<span class="code-keyword">class</span> <span class="code-func">ProductData</span>(<span class="code-func">BaseModel</span>):
+    <span class="code-var">name</span>: <span class="code-param">str</span>
+    <span class="code-var">price</span>: <span class="code-param">float</span>
+    <span class="code-var">rating</span>: <span class="code-param">float</span>
+    <span class="code-var">in_stock</span>: <span class="code-param">bool</span>
+
+<span class="code-var">agent</span> <span class="code-op">=</span> <span class="code-func">Agent</span>(
+    <span class="code-param">task</span><span class="code-op">=</span><span class="code-string">"Extract all products from the first page"</span>,
+    <span class="code-param">llm</span><span class="code-op">=</span><span class="code-func">ChatOpenAI</span>(<span class="code-param">model</span><span class="code-op">=</span><span class="code-string">"gpt-4o"</span>),
+    <span class="code-param">output_model_schema</span><span class="code-op">=</span><span class="code-var">ProductData</span>,
+)
+
+<span class="code-comment"># Returns typed, validated data — not messy HTML</span>
+<span class="code-var">products</span> <span class="code-op">=</span> <span class="code-keyword">await</span> <span class="code-var">agent</span>.<span class="code-func">run</span>()</code></pre>
+
+                <!-- Tab 3: Custom Tools -->
+                <pre class="code-block"><code><span class="code-keyword">from</span> browser_use <span class="code-keyword">import</span> <span class="code-func">Agent</span>, <span class="code-func">Tools</span>, <span class="code-func">ChatGoogle</span>
+
+<span class="code-var">tools</span> <span class="code-op">=</span> <span class="code-func">Tools</span>()
+
+<span class="code-keyword">@</span><span class="code-var">tools</span>.<span class="code-func">action</span>(<span class="code-param">description</span><span class="code-op">=</span><span class="code-string">"Send Slack alert when issue found"</span>)
+<span class="code-keyword">def</span> <span class="code-func">send_alert</span>(<span class="code-var">message</span>: <span class="code-param">str</span>, <span class="code-var">severity</span>: <span class="code-param">str</span>) <span class="code-op">-></span> <span class="code-param">str</span>:
+    <span class="code-comment"># Your alerting logic here</span>
+    <span class="code-var">slack</span>.<span class="code-func">post</span>(<span class="code-param">channel</span><span class="code-op">=</span><span class="code-string">"#alerts"</span>, <span class="code-param">text</span><span class="code-op">=</span><span class="code-string">f"[{severity}] {message}"</span>)
+    <span class="code-keyword">return</span> <span class="code-string">"Alert sent"</span>
+
+<span class="code-var">agent</span> <span class="code-op">=</span> <span class="code-func">Agent</span>(
+    <span class="code-param">task</span><span class="code-op">=</span><span class="code-string">"Monitor checkout flow and alert on any failures"</span>,
+    <span class="code-param">llm</span><span class="code-op">=</span><span class="code-func">ChatGoogle</span>(<span class="code-param">model</span><span class="code-op">=</span><span class="code-string">"gemini-2.0-flash"</span>),
+    <span class="code-param">tools</span><span class="code-op">=</span><span class="code-var">tools</span>,
+)</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section id="usecases">
+        <div class="section-inner fade-in">
+            <div class="section-label">Use Cases</div>
+            <h2>How companies use Yeti Agent</h2>
+            <p class="section-desc">
+                From startups to enterprises, teams use Yeti Agent to
+                automate what humans shouldn't spend time on.
+            </p>
+
+            <div class="usecase-grid">
+                <div class="usecase-card">
+                    <span class="usecase-tag tag-monitoring">Monitoring</span>
+                    <h3>Production Website Monitoring</h3>
+                    <p>Run autonomous agents 24/7 that test checkout flows, login pages, and critical user journeys. Get alerted before customers complain.</p>
+                </div>
+                <div class="usecase-card">
+                    <span class="usecase-tag tag-testing">Testing</span>
+                    <h3>End-to-End QA Automation</h3>
+                    <p>Replace brittle Selenium scripts with AI agents that adapt to UI changes. Write tests in plain English — the agent figures out the selectors.</p>
+                </div>
+                <div class="usecase-card">
+                    <span class="usecase-tag tag-extraction">Extraction</span>
+                    <h3>Competitive Intelligence</h3>
+                    <p>Extract pricing, product data, and market intelligence from competitor websites. Output directly to Pydantic models for clean data pipelines.</p>
+                </div>
+                <div class="usecase-card">
+                    <span class="usecase-tag tag-automation">Automation</span>
+                    <h3>Workflow Automation</h3>
+                    <p>Automate multi-step workflows across web apps — form filling, report generation, data entry. Works with any website, no API needed.</p>
+                </div>
+                <div class="usecase-card">
+                    <span class="usecase-tag tag-testing">Testing</span>
+                    <h3>Regression Detection</h3>
+                    <p>Deploy agents post-release to verify nothing broke. Smarter than screenshot diffing — agents understand context and intent.</p>
+                </div>
+                <div class="usecase-card">
+                    <span class="usecase-tag tag-monitoring">Monitoring</span>
+                    <h3>SLA Compliance Checking</h3>
+                    <p>Verify partner/vendor portals meet SLA requirements. Agents navigate, measure response times, check content, and generate compliance reports.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section>
+        <div class="section-inner fade-in">
+            <div class="section-label">Architecture</div>
+            <h2>How it works</h2>
+            <p class="section-desc">
+                Event-driven architecture with watchdog services.
+                Each component manages isolated state.
+            </p>
+
+            <div class="arch-flow">
+                <div class="arch-node">
+                    <div class="arch-node-icon">📋</div>
+                    <div class="arch-node-label">Your Task</div>
+                    <div class="arch-node-sub">Plain English</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="arch-node-icon">🧠</div>
+                    <div class="arch-node-label">LLM</div>
+                    <div class="arch-node-sub">GPT / Claude / Gemini</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="arch-node-icon">🤖</div>
+                    <div class="arch-node-label">Agent</div>
+                    <div class="arch-node-sub">Plans & Executes</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="arch-node-icon">🌐</div>
+                    <div class="arch-node-label">Browser</div>
+                    <div class="arch-node-sub">CDP Protocol</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-node">
+                    <div class="arch-node-icon">📊</div>
+                    <div class="arch-node-label">Results</div>
+                    <div class="arch-node-sub">Typed Data</div>
+                </div>
+            </div>
+
+            <div class="feature-grid" style="margin-top: 2rem;">
+                <div class="feature-card">
+                    <h3>Event Bus</h3>
+                    <p>Decoupled services communicate through an event bus. Watchdogs for security, popups, downloads, DOM, and crashes all run independently.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>CDP Direct Access</h3>
+                    <p>Uses cdp-use for typed Chrome DevTools Protocol access. Full control over browser state, network, DOM, and JavaScript execution.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Pydantic v2 Core</h3>
+                    <p>All data models use Pydantic v2 with strict validation. Type-safe from browser state through LLM output to your application code.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enterprise -->
+    <section id="enterprise">
+        <div class="section-inner fade-in">
+            <div class="section-label">Enterprise</div>
+            <h2>Production-grade from day one</h2>
+            <p class="section-desc">
+                Security, observability, and reliability features
+                built for teams that can't afford downtime.
+            </p>
+
+            <div class="enterprise-grid">
+                <div class="enterprise-card">
+                    <div class="enterprise-number">8+</div>
+                    <div class="enterprise-label">LLM Providers Supported</div>
+                </div>
+                <div class="enterprise-card">
+                    <div class="enterprise-number">20+</div>
+                    <div class="enterprise-label">Built-in Browser Actions</div>
+                </div>
+                <div class="enterprise-card">
+                    <div class="enterprise-number">3</div>
+                    <div class="enterprise-label">Python Versions (3.11-3.13)</div>
+                </div>
+                <div class="enterprise-card">
+                    <div class="enterprise-number">9</div>
+                    <div class="enterprise-label">Watchdog Services</div>
+                </div>
+            </div>
+
+            <div class="feature-grid" style="margin-top: 2rem;">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Security First</h3>
+                    <p>Domain allowlists/blocklists, sensitive data masking, proxy support, permission handling, and configurable security watchdogs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Observability</h3>
+                    <p>Structured logging, telemetry, GIF generation of runs, conversation export, and integration with Laminar for distributed tracing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🐳</div>
+                    <h3>Deploy Anywhere</h3>
+                    <p>Docker-ready, Kubernetes-compatible, cloud browser support. Run headless in CI/CD, serverless functions, or dedicated infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="cta">
+        <div class="fade-in">
+            <div class="section-label">Get Started</div>
+            <h2>Start automating in<br>under 60 seconds</h2>
+            <p>One command to install. Three lines to run.</p>
+
+            <div class="install-box" onclick="copyInstall(this)" style="margin: 0 auto 2rem;" title="Click to copy">
+                <code>curl -fsSL https://nikeGunn.github.io/yeti-agent/install.sh | bash</code>
+                <button class="copy-btn" onclick="event.stopPropagation(); copyInstall(this.parentElement)">Copy</button>
+            </div>
+
+            <div class="hero-actions">
+                <a href="https://github.com/NikeGunn/yeti-agent" class="btn btn-primary" target="_blank">
+                    View on GitHub
+                </a>
+                <a href="https://github.com/NikeGunn/yeti-agent/issues" class="btn btn-secondary" target="_blank">
+                    Report Issue
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">🏔️ Yeti Agent</div>
+            <ul class="footer-links">
+                <li><a href="https://github.com/NikeGunn/yeti-agent" target="_blank">GitHub</a></li>
+                <li><a href="https://github.com/NikeGunn/yeti-agent#documentation" target="_blank">Docs</a></li>
+                <li><a href="https://github.com/NikeGunn/yeti-agent/issues" target="_blank">Issues</a></li>
+                <li><a href="https://pypi.org/project/yeti-agent/" target="_blank">PyPI</a></li>
+            </ul>
+            <div class="footer-made">
+                Made with ❤️ in Nepal 🇳🇵 by <a href="https://github.com/NikeGunn" style="color: var(--accent-light); text-decoration: none;">Nikhil Bhagat</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Copy install command
+        function copyInstall(box) {
+            const code = box.querySelector('code');
+            navigator.clipboard.writeText(code.textContent).then(() => {
+                const btn = box.querySelector('.copy-btn');
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function copyText(text, el) {
+            navigator.clipboard.writeText(text).then(() => {
+                const original = el.textContent;
+                el.textContent = 'Copied!';
+                el.style.color = 'var(--green)';
+                setTimeout(() => {
+                    el.textContent = original;
+                    el.style.color = '';
+                }, 1500);
+            });
+        }
+
+        // Code tabs
+        function switchTab(index) {
+            document.querySelectorAll('.code-tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.code-block').forEach((block, i) => {
+                block.classList.toggle('active', i === index);
+            });
+        }
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
