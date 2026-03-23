@@ -1,5 +1,5 @@
 name: 📚 Documentation Issue
-description: Report an issue in the browser-use documentation
+description: Report an issue in the yeti-agent documentation
 labels: ["documentation"]
 title: "Documentation: ..."
 body:
@@ -27,7 +27,7 @@ body:
     attributes:
       label: Documentation Page
       description: Which page or section of the documentation is this about?
-      placeholder: "e.g. https://docs.browser-use.com/customize/browser-settings > Context Configuration > headless"
+      placeholder: "e.g. https://github.com/NikeGunn/yeti-agent#readme > Context Configuration > headless"
     validations:
       required: true
 

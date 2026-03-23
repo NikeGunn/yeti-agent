@@ -1,12 +1,12 @@
 ## Reporting Security Issues
 
-If you believe you have found a security vulnerability in browser-use, please report it through coordinated disclosure.
+If you believe you have found a security vulnerability in Yeti Agent, please report it through coordinated disclosure.
 
 **Please do not report security vulnerabilities through the repository issues, discussions, or pull requests.**
 
-Instead, please open a new [Github security advisory](https://github.com/browser-use/browser-use/security/advisories/new).
+Instead, please open a new [Github security advisory](https://github.com/NikeGunn/yeti-agent/security/advisories/new).
 
-Please include as much of the information listed below as you can to help me better understand and resolve the issue:
+Please include as much of the information listed below as you can to help us better understand and resolve the issue:
 
 * The type of issue (e.g., buffer overflow, SQL injection, or cross-site scripting)
 * Full paths of source file(s) related to the manifestation of the issue
@@ -16,4 +16,4 @@ Please include as much of the information listed below as you can to help me bet
 * Proof-of-concept or exploit code (if possible)
 * Impact of the issue, including how an attacker might exploit the issue
 
-This information will help me triage your report more quickly.
+This information will help us triage your report more quickly.
