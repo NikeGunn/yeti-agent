@@ -25,7 +25,7 @@ jobs:
           github-token: ${{ secrets.TRIGGER_CLOUD_BUILD_GH_KEY }}
           script: |
             const result = await github.rest.repos.createDispatchEvent({
-              owner: 'browser-use',
+              owner: '${{ github.repository_owner }}',
               repo: 'cloud',
               event_type: 'trigger-workflow',
               client_payload: {"commit_hash": "${{ github.event.inputs.commit_hash || github.sha }}"}

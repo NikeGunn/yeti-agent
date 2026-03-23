@@ -1,40 +1,35 @@
 # syntax=docker/dockerfile:1
 # check=skip=SecretsUsedInArgOrEnv
 
-# This is the Dockerfile for browser-use, it bundles the following dependencies:
-#     python3, pip, playwright, chromium, browser-use and its dependencies.
+# This is the Dockerfile for yeti-agent, it bundles the following dependencies:
+#     python3, pip, playwright, chromium, yeti-agent and its dependencies.
 # Usage:
-#     git clone https://github.com/browser-use/browser-use.git && cd browser-use
-#     docker build . -t browseruse --no-cache
-#     docker run -v "$PWD/data":/data browseruse
-#     docker run -v "$PWD/data":/data browseruse --version
-# Multi-arch build:
-#     docker buildx create --use
-#     docker buildx build . --platform=linux/amd64,linux/arm64--push -t browseruse/browseruse:some-tag
-#
-# Read more: https://docs.browser-use.com
+#     git clone https://github.com/NikeGunn/yeti-agent.git && cd yeti-agent
+#     docker build . -t yeti-agent --no-cache
+#     docker run -v "$PWD/data":/data yeti-agent
+#     docker run -v "$PWD/data":/data yeti-agent --version
 
 #########################################################################################
 
 
 FROM python:3.12-slim
 
-LABEL name="browseruse" \
-    maintainer="Nick Sweeting <dockerfile@browser-use.com>" \
-    description="Make websites accessible for AI agents. Automate tasks online with ease." \
-    homepage="https://github.com/browser-use/browser-use" \
-    documentation="https://docs.browser-use.com" \
-    org.opencontainers.image.title="browseruse" \
-    org.opencontainers.image.vendor="browseruse" \
-    org.opencontainers.image.description="Make websites accessible for AI agents. Automate tasks online with ease." \
-    org.opencontainers.image.source="https://github.com/browser-use/browser-use" \
+LABEL name="yeti-agent" \
+    maintainer="Nikhil Bhagat" \
+    description="Yeti Agent — Autonomous AI Agent Platform. 24/7 browser automation powered by LLMs + CDP." \
+    homepage="https://github.com/NikeGunn/yeti-agent" \
+    documentation="https://github.com/NikeGunn/yeti-agent#documentation" \
+    org.opencontainers.image.title="yeti-agent" \
+    org.opencontainers.image.vendor="NikeGunn" \
+    org.opencontainers.image.description="Yeti Agent — Autonomous AI Agent Platform. 24/7 browser automation powered by LLMs + CDP." \
+    org.opencontainers.image.source="https://github.com/NikeGunn/yeti-agent" \
     com.docker.image.source.entrypoint="Dockerfile" \
     com.docker.desktop.extension.api.version=">= 1.4.7" \
     com.docker.desktop.extension.icon="https://avatars.githubusercontent.com/u/192012301?s=200&v=4" \
-    com.docker.extension.publisher-url="https://browser-use.com" \
-    com.docker.extension.screenshots='[{"alt": "Screenshot of CLI splashscreen", "url": "https://github.com/user-attachments/assets/3606d851-deb1-439e-ad90-774e7960ded8"}, {"alt": "Screenshot of CLI running", "url": "https://github.com/user-attachments/assets/d018b115-95a4-4ac5-8259-b750bc5f56ad"}]' \
-    com.docker.extension.detailed-description='See here for detailed documentation: https://docs.browser-use.com' \
-    com.docker.extension.changelog='See here for release notes: https://github.com/browser-use/browser-use/releases' \
+    com.docker.extension.publisher-url="https://github.com/NikeGunn/yeti-agent" \
+    com.docker.extension.screenshots='[]' \
+    com.docker.extension.detailed-description='See here for detailed documentation: https://github.com/NikeGunn/yeti-agent#documentation' \
+    com.docker.extension.changelog='See here for release notes: https://github.com/NikeGunn/yeti-agent/releases' \
     com.docker.extension.categories='web,utility-tools,ai'
 
 ARG TARGETPLATFORM
@@ -210,4 +205,4 @@ EXPOSE 9222
 # HEALTHCHECK --interval=30s --timeout=20s --retries=15 \
 #     CMD curl --silent 'http://localhost:8000/health/' | grep -q 'OK'
 
-ENTRYPOINT ["browser-use"]
+ENTRYPOINT ["yeti-agent"]

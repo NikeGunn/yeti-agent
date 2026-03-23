@@ -1,9 +1,9 @@
 # Fast Dockerfile using pre-built base images
-ARG REGISTRY=browseruse
+ARG REGISTRY=nikegunn
 ARG BASE_TAG=latest
 FROM ${REGISTRY}/base-python-deps:${BASE_TAG}
 
-LABEL name="browseruse" description="Browser automation for AI agents"
+LABEL name="yeti-agent" description="Autonomous AI Agent Platform — 24/7 browser automation powered by LLMs + CDP"
 
 ENV BROWSERUSE_USER="browseruse" DEFAULT_PUID=911 DEFAULT_PGID=911 DATA_DIR=/data
 
@@ -21,11 +21,11 @@ RUN groupadd --system $BROWSERUSE_USER && \
 WORKDIR /app
 COPY . /app
 
-# Install browser-use
+# Install yeti-agent
 RUN --mount=type=cache,target=/root/.cache/uv,sharing=locked \
     uv sync --all-extras --locked --no-dev --compile-bytecode
 
 USER "$BROWSERUSE_USER"
 VOLUME "$DATA_DIR"
 EXPOSE 9242 9222
-ENTRYPOINT ["browser-use"]
+ENTRYPOINT ["yeti-agent"]

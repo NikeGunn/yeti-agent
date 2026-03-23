@@ -53,8 +53,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            browseruse/browseruse
-            ghcr.io/browser-use/browser-use
+            ${{ secrets.DOCKER_USERNAME }}/yeti-agent
+            ghcr.io/${{ github.repository_owner }}/yeti-agent
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -72,5 +72,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=browseruse/browseruse:buildcache
-          cache-to: type=registry,ref=browseruse/browseruse:buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/yeti-agent:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/yeti-agent:buildcache,mode=max
